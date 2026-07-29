@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running Quest - Programme 8 semaines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #dbeafe 0%, #fed7aa 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        header {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-content {
+            padding: 16px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .header-title p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+        }
+
+        nav {
+            background: #f3f4f6;
+            border-top: 1px solid #e5e7eb;
+            padding: 12px 0;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            border: none;
+            background: white;
+            color: #374151;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        main {
+            padding: 24px 0;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .week-card {
+            margin-bottom: 24px;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+
+        .week-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .week-title h3 {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .week-title p {
+            color: #dbeafe;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .week-progress {
+            text-align: right;
+        }
+
+        .progress-number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .progress-label {
+            color: #dbeafe;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .week-body {
+            background: white;
+            padding: 16px;
+        }
+
+        .workout {
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            gap: 12px;
+        }
+
+        .workout:hover {
+            border-color: #93c5fd;
+            background: #f0f9ff;
+        }
+
+        .workout.completed {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .workout.completed .checkbox {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .workout-info {
+            flex: 1;
+        }
+
+        .workout-title {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .workout-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .detail-item {
+            color: #6b7280;
+        }
+
+        .detail-item strong {
+            color: #374151;
+        }
+
+        .workout-note {
+            font-size: 12px;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tip-header {
+            background: linear-gradient(135deg, #c084fc 0%, #ec4899 100%);
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .tip-body {
+            padding: 16px;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tip-check {
+            color: #3b82f6;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border-color: #f59e0b;
+            color: #333;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #333;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+
+        .stat-green {
+            background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+        }
+
+        .stat-orange {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .stat-sublabel {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 32px;
+            background: white;
+            margin-left: -16px;
+            margin-right: -16px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block;
+            }
+
+            nav {
+                display: none;
+            }
+
+            nav.open {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .week-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .week-progress {
+                text-align: left;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>🏃‍♀️ Running Quest</h1>
+                    <p>8 semaines vers le 10km</p>
+                </div>
+                <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            </div>
+            <nav id="nav">
+                <button class="nav-btn active" onclick="switchTab('program')">📅 Programme</button>
+                <button class="nav-btn" onclick="switchTab('tips')">💡 Conseils</button>
+                <button class="nav-btn" onclick="switchTab('tracker')">✅ Suivi</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="program" class="content-section active">
+            <div class="card">
+                <h2>📋 Ton programme 8 semaines</h2>
+                <p class="card-desc">Progression graduelle de 3km → 10km. 3 séances/semaine (idéal pour toi)</p>
+            </div>
+            <div id="weeks-container"></div>
+            <div class="alert alert-info" style="margin-bottom: 0;">
+                <strong>💪 Musculation:</strong> Garde tes séances 2x/semaine (surtout bas du corps + core). Ça aide BEAUCOUP la course !
+            </div>
+        </div>
+
+        <div id="tips" class="content-section">
+            <div class="card">
+                <h2>💡 Guide complet</h2>
+                <p class="card-desc">Tout ce que tu dois savoir pour bien démarrer</p>
+            </div>
+            <div id="tips-container"></div>
+            <div class="alert alert-warning">
+                <strong>⚠️ Règle d'or:</strong> Si tu sens une douleur aiguë (pas juste de la fatigue), arrête et repose-toi. Les blessures se développent en ignor les signaux.
+            </div>
+            <div class="alert alert-info" style="margin-bottom: 0;">
+                <strong>🎯 Objectif semaine 8:</strong> Simulation 10km. Après, tu peux soit faire une vraie course de 10km, soit continuer à progresser sur du 15km !
+            </div>
+        </div>
+
+        <div id="tracker" class="content-section">
+            <div class="card">
+                <h2>✅ Suivi de progression</h2>
+                <p class="card-desc">Clique sur les séances pour les marquer comme complétées</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card stat-blue">
+                    <div class="stat-label">Total séances</div>
+                    <div class="stat-number" id="total-workouts">0/24</div>
+                    <div class="stat-sublabel">dans le programme</div>
+                </div>
+                <div class="stat-card stat-green">
+                    <div class="stat-label">Progression</div>
+                    <div class="stat-number" id="total-percent">0%</div>
+                    <div class="stat-sublabel">du programme</div>
+                </div>
+                <div class="stat-card stat-orange">
+                    <div class="stat-label">Distance cumulée</div>
+                    <div class="stat-number" id="total-distance">0km</div>
+                    <div class="stat-sublabel">parcourue</div>
+                </div>
+            </div>
+            <div id="tracker-container"></div>
+        </div>
+    </main>
+
+    <footer>
+        🚀 Commence demain et sois régulière. Les résultats arrivent après 4 semaines !
+    </footer>
+
+    <script>
+        const program = [
+            {week:1,focus:"Reprise progressive",workouts:[{day:"Lundi",type:"Course facile",distance:"3 km",pace:"6:30-7:00 min/km",note:"Échauffement 5min, cool-down 5min"},{day:"Mercredi",type:"Repos ou étirement",distance:"-",pace:"-",note:"Stretching 15-20min"},{day:"Vendredi",type:"Course facile",distance:"3.2 km",pace:"6:30-7:00 min/km",note:"Focus sur la respiration"}]},
+            {week:2,focus:"Consolidation base",workouts:[{day:"Lundi",type:"Course facile",distance:"3.5 km",pace:"6:30-7:00 min/km",note:""},{day:"Mercredi",type:"Repos actif",distance:"-",pace:"-",note:"Marche, yoga ou étirement"},{day:"Samedi",type:"Course longue",distance:"4 km",pace:"7:00-7:30 min/km",note:"Augmente graduellement"}]},
+            {week:3,focus:"Introduction au tempo",workouts:[{day:"Lundi",type:"Course facile",distance:"3.5 km",pace:"6:30-7:00 min/km",note:""},{day:"Mercredi",type:"Fartlek léger",distance:"3.5 km",pace:"Var. 6:00-7:00",note:"2x2min rapide, 2min récup"},{day:"Samedi",type:"Course longue",distance:"4.5 km",pace:"7:00-7:30 min/km",note:""}]},
+            {week:4,focus:"Augmentation volume",workouts:[{day:"Lundi",type:"Course facile",distance:"4 km",pace:"6:30-7:00 min/km",note:""},{day:"Mercredi",type:"Fartlek",distance:"4 km",pace:"Var. 5:45-7:00",note:"3x2min rapide, 2min récup"},{day:"Samedi",type:"Course longue",distance:"5 km",pace:"7:00-7:30 min/km",note:""}]},
+            {week:5,focus:"Développement endurance",workouts:[{day:"Lundi",type:"Course facile",distance:"4.5 km",pace:"6:30-7:00 min/km",note:""},{day:"Mercredi",type:"Intervalle",distance:"4.5 km",pace:"Var. 5:30-7:00",note:"4x3min rapide, 2min récup"},{day:"Samedi",type:"Course longue",distance:"5.5 km",pace:"7:00-7:30 min/km",note:""}]},
+            {week:6,focus:"Intensité modérée",workouts:[{day:"Lundi",type:"Course facile",distance:"4 km",pace:"6:30-7:00 min/km",note:"Récupération"},{day:"Mercredi",type:"Tempo run",distance:"4.5 km",pace:"6:15 allure soutenue",note:"15min facile + 20min à 6:15 + 10min facile"},{day:"Samedi",type:"Course longue",distance:"6 km",pace:"7:00-7:30 min/km",note:""}]},
+            {week:7,focus:"Approche du 10km",workouts:[{day:"Lundi",type:"Course facile",distance:"4.5 km",pace:"6:30-7:00 min/km",note:""},{day:"Mercredi",type:"Intervalle court",distance:"5 km",pace:"Var. 5:30-6:45",note:"6x1.5min rapide, 1:30 récup"},{day:"Samedi",type:"Course longue",distance:"6.5 km",pace:"7:00-7:30 min/km",note:"Préparation 10km"}]},
+            {week:8,focus:"Consolidation 10km",workouts:[{day:"Lundi",type:"Course facile",distance:"4 km",pace:"6:30-7:00 min/km",note:"Repos relatif"},{day:"Mercredi",type:"Course steady",distance:"5 km",pace:"6:15-6:30 min/km",note:"Maintien allure"},{day:"Samedi",type:"Simulation 10km",distance:"9 km",pace:"6:30-7:00 min/km",note:"Alterne pace + test allure"}]}
+        ];
+
+        const tips = [
+            {icon:"🏃",title:"Avant de courir",items:["Échauffement 5-10min : marche + légers mouvements dynamiques","Ne sors jamais sans avoir mangé légèrement (1-2h avant)","Hydrate-toi bien (eau régulièrement dans la journée)"]},
+            {icon:"⚡",title:"Pendant la course",items:["Écoute ton corps : la douleur ≠ essoufflement normal","Respire régulièrement (par le nez si possible en effort léger)","Garde un rythme cardiaque où tu peux encore parler"]},
+            {icon:"❄️",title:"Après la course",items:["Cool-down 5-10min : marche lente pour ralentir","Stretching 10-15min (muscles principaux : jambes, fessiers, dos)","Réhydrate-toi et mange dans l'heure (protéine + carbs)"]},
+            {icon:"🛡️",title:"Prévention blessures",items:["Augmente progressivement (max +10% volume/semaine)","Varie tes parcours (terrain plat + légères côtes)","Renforce tes hanches et chevilles 2x/semaine","Dors 7-8h : c'est là que ça se construit"]}
+        ];
+
+        let completed = {};
+
+        // Charger depuis localStorage
+        function loadData() {
+            const saved = localStorage.getItem('runningProgress');
+            if (saved) {
+                completed = JSON.parse(saved);
+            }
+        }
+
+        // Sauvegarder dans localStorage
+        function saveData() {
+            localStorage.setItem('runningProgress', JSON.stringify(completed));
+        }
+
+        function toggleMenu() {
+            const nav = document.getElementById('nav');
+            nav.classList.toggle('open');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+            document.getElementById('nav').classList.remove('open');
+            if (tab === 'tracker') {
+                updateStats();
+            }
+        }
+
+        function toggleWorkout(week, day) {
+            const key = `w${week}-${day}`;
+            completed[key] = !completed[key];
+            saveData();
+            renderProgram();
+            updateStats();
+        }
+
+        function getCompletionRate(week) {
+            const workouts = program[week - 1].workouts;
+            const count = workouts.filter(w => completed[`w${week}-${w.day}`]).length;
+            return Math.round((count / workouts.length) * 100);
+        }
+
+        function getTotalDistance() {
+            let total = 0;
+            program.forEach(week => {
+                week.workouts.forEach(workout => {
+                    if (completed[`w${week.week}-${workout.day}`]) {
+                        const match = workout.distance.match(/[\d.]+/);
+                        if (match) total += parseFloat(match[0]);
+                    }
+                });
+            });
+            return total;
+        }
+
+        function updateStats() {
+            const totalCompleted = Object.values(completed).filter(Boolean).length;
+            const percent = Math.round((totalCompleted / 24) * 100);
+            const distance = getTotalDistance();
+            document.getElementById('total-workouts').textContent = `${totalCompleted}/24`;
+            document.getElementById('total-percent').textContent = `${percent}%`;
+            document.getElementById('total-distance').textContent = `~${Math.round(distance)}km`;
+        }
+
+        function renderProgram() {
+            const container = document.getElementById('weeks-container');
+            container.innerHTML = '';
+            program.forEach(week => {
+                const weekEl = document.createElement('div');
+                weekEl.className = 'week-card';
+                let workoutsHtml = '';
+                week.workouts.forEach(workout => {
+                    const key = `w${week.week}-${workout.day}`;
+                    const isCompleted = completed[key];
+                    workoutsHtml += `
+                        <div class="workout ${isCompleted ? 'completed' : ''}" onclick="toggleWorkout(${week.week}, '${workout.day}')">
+                            <div class="checkbox">${isCompleted ? '✓' : ''}</div>
+                            <div class="workout-info">
+                                <div class="workout-title">${workout.day} - ${workout.type}</div>
+                                <div class="workout-details">
+                                    <div class="detail-item"><strong>Distance:</strong> ${workout.distance}</div>
+                                    <div class="detail-item"><strong>Allure:</strong> ${workout.pace}</div>
+                                </div>
+                                ${workout.note ? `<div class="workout-note">💡 ${workout.note}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                weekEl.innerHTML = `
+                    <div class="week-header">
+                        <div class="week-title">
+                            <h3>Semaine ${week.week}</h3>
+                            <p>${week.focus}</p>
+                        </div>
+                        <div class="week-progress">
+                            <div class="progress-number">${getCompletionRate(week.week)}%</div>
+                            <div class="progress-label">complétée</div>
+                        </div>
+                    </div>
+                    <div class="week-body">${workoutsHtml}</div>
+                `;
+                container.appendChild(weekEl);
+            });
+        }
+
+        function renderTips() {
+            const container = document.getElementById('tips-container');
+            container.innerHTML = '';
+            tips.forEach(tip => {
+                const tipEl = document.createElement('div');
+                tipEl.className = 'tip-card';
+                let itemsHtml = '';
+                tip.items.forEach(item => {
+                    itemsHtml += `<div class="tip-item"><span class="tip-check">✓</span><span>${item}</span></div>`;
+                });
+                tipEl.innerHTML = `
+                    <div class="tip-header">${tip.icon} ${tip.title}</div>
+                    <div class="tip-body">${itemsHtml}</div>
+                `;
+                container.appendChild(tipEl);
+            });
+        }
+
+        loadData();
+        renderProgram();
+        renderTips();
+        updateStats();
+    </script>
+</body>
+</html>
